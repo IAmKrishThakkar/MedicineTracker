@@ -2,9 +2,34 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-nativ
 import React, { useState } from 'react';
 import Colors from '../../constant/Colors';
 import { useRouter } from 'expo-router';
+import { auth } from './../../config/FirebaseConfig';
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function SignIn() {
     const router = useRouter();
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+
+    const OnSignInClick = () => {
+        if (!email || !password) {
+            alert('Please fill all fields');
+            return;
+        }
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+                console.log(user);
+                router.push('(tabs)');
+                // ...
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(errorMessage);
+                console.log(errorCode);
+            });
+    }
 
     return (
         <View style={styles.container}>
@@ -21,6 +46,7 @@ export default function SignIn() {
                     accessibilityLabel="Email Input Field"
                     keyboardType="email-address"
                     textContentType="emailAddress"
+                    onChangeText={(value) => setEmail(value)}
                 />
             </View>
 
@@ -33,10 +59,11 @@ export default function SignIn() {
                     accessible
                     accessibilityLabel="Password Input Field"
                     textContentType="password"
+                    onChangeText={(value) => setPassword(value)} 
                 />
             </View>
 
-            <TouchableOpacity style={styles.button} accessible accessibilityLabel="Login Button">
+            <TouchableOpacity style={styles.button} onPress={OnSignInClick} accessible accessibilityLabel="Login Button">
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
 

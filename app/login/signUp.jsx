@@ -3,23 +3,29 @@ import React, { useState } from 'react';
 import Colors from '../../constant/Colors';
 import { useRouter } from 'expo-router';
 import {auth} from './../../config/FirebaseConfig'
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 
 export default function SignUp() {
     const router = useRouter();
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
+    const [userName,setUserName]=useState();
     const onCreateAccount = () => {
 
-        if(!email||!password){
+        if(!email||!password||!userName){
             alert('Please fill in all fields');
+            return;
         }
         createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
+            .then(async(userCredential) => {
                 // Signed up 
                 const user = userCredential.user;
+                await updateProfile(user,{
+                    displayName:userName
+                })
                 console.log(user);
+                router.push('(tabs)');
                 // ...
             })
             .catch((error) => {
@@ -44,6 +50,7 @@ export default function SignUp() {
                     style={styles.textInput}
                     accessible
                     accessibilityLabel="Name Input Field"
+                    onChangeText={(value)=>setUserName(value)}
                 />
             </View>
 
