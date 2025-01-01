@@ -1,10 +1,37 @@
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import Colors from '../../constant/Colors';
 import { useRouter } from 'expo-router';
+import {auth} from './../../config/FirebaseConfig'
+import { createUserWithEmailAndPassword } from "firebase/auth";
+
 
 export default function SignUp() {
     const router = useRouter();
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const onCreateAccount = () => {
+
+        if(!email||!password){
+            alert('Please fill in all fields');
+        }
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Signed up 
+                const user = userCredential.user;
+                console.log(user);
+                // ...
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode, errorMessage);
+                if(errorCode=='auth/email-already-in-use'){
+                    alert('Email already in use')
+                }
+                // ..
+            });
+    }
 
     return (
         <View style={styles.container}>
@@ -29,6 +56,7 @@ export default function SignUp() {
                     textContentType="emailAddress"
                     accessible
                     accessibilityLabel="Email Input Field"
+                    onChangeText={(value)=>setEmail(value)}
                 />
             </View>
 
@@ -41,11 +69,12 @@ export default function SignUp() {
                     textContentType="password"
                     accessible
                     accessibilityLabel="Password Input Field"
+                    onChangeText={(value)=>setPassword(value)}
                 />
             </View>
 
-            <TouchableOpacity style={styles.button} >
-                <Text style={styles.buttonText}>Sign Up</Text>
+            <TouchableOpacity style={styles.button} onPress={onCreateAccount} >
+                <Text style={styles.buttonText}>Create Account</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
