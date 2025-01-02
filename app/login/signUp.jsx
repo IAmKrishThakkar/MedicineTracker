@@ -24,6 +24,8 @@ export default function SignUp() {
                 await updateProfile(user,{
                     displayName:userName
                 })
+                await setLocalStorage('userDetail',user);
+                
                 console.log(user);
                 router.push('(tabs)');
                 // ...
