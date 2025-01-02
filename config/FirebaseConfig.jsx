@@ -1,6 +1,7 @@
 
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 const firebaseConfig = {
   apiKey: "AIzaSyBY40dad93gSTR5zK5eov1yQey_-p3dSyI",
   authDomain: "meditracker-d16eb.firebaseapp.com",
@@ -14,4 +15,5 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 export { auth };
-//hell
+
+export const db=getFirestore(app)
