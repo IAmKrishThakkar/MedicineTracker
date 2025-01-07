@@ -13,14 +13,16 @@ export const formatTime = (timestamp) => {
 };
 
 export const getDatesRange = (startDate, endDate) => {
+    if (!startDate || !endDate) throw new Error("Start and end dates are required.");
     const start = moment(startDate, 'MM/DD/YYYY');
     const end = moment(endDate, 'MM/DD/YYYY');
-    const dates = [];
 
+    if (!start.isValid() || !end.isValid()) return "Invalid date range";
+
+    const dates = [];
     while (start.isSameOrBefore(end)) {
         dates.push(start.format('MM/DD/YYYY'));
         start.add(1, 'days');
     }
-
     return dates;
 };

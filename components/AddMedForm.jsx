@@ -1,12 +1,12 @@
-import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import React, { useState } from 'react';
+import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Colors from '../constant/Colors';
 import { TypeList, WhenToTake } from '../constant/Options';
 import { Picker } from '@react-native-picker/picker';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { FormatDate, formatDateForText, formatTime, getDatesRange } from '../service/ConvertDateTime';
-import {db} from '../config/FirebaseConfig'
+import { db } from '../config/FirebaseConfig';
 import { getLocalStorage } from '../service/Storage';
 import { setDoc, doc } from 'firebase/firestore'; 
 import { useRouter } from 'expo-router';
@@ -16,45 +16,72 @@ export default function AddMedForm() {
     const [showStartDate, setShowStartDate] = useState(false);
     const [showEndDate, setShowEndDate] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
-    const [loading,setLoading]=useState(false);
-    const router=useRouter();
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     const onHandleInputChange = (field, value) => {
         setFormData((prev) => ({
             ...prev,
             [field]: value,
         }));
-        console.log(formData);
     };
 
-    const SaveMedication=async()=>{
-        const docId=Date.now().toString();
-        const user=await getLocalStorage('userDetail');
-        if(!(formData.name||formData.type||formData?.dose||formData?.startDate||formData?.endDate||formData.reminder)){
-            Alert.alert('Enter All Filed');
-            return;
+    const validateForm = () => {
+        const { name, type, dose, startDate, endDate, reminder } = formData;
+    
+        if (!name || !type || !dose || !startDate || !endDate || !reminder) {
+            Alert.alert('Validation Error', 'Please fill out all fields.');
+            return false;
         }
-        const dates=getDatesRange(formData?.startDate,formData?.endDate);
+    
+        if (isNaN(dose)) {
+            Alert.alert('Validation Error', 'Dose must be a valid number.');
+            return false;
+        }
+    
+        if (new Date(startDate) > new Date(endDate)) {
+            Alert.alert('Validation Error', 'Start Date must be earlier than End Date.');
+            return false;
+        }
+    
+        return true;
+    };
+    
+
+    const SaveMedication = async () => {
+        if (!validateForm()) return;
+
+        const docId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const user = await getLocalStorage('userDetail');
+        const dates = getDatesRange(formData?.startDate, formData?.endDate);
 
         setLoading(true);
-        try{
-            await setDoc(doc(db,'medication',docId),{
+        try {
+            await setDoc(doc(db, 'medication', docId), {
                 ...formData,
-                userEmail:user?.email,
-                docId:docId,
-                dates:dates
+                userEmail: user?.email,
+                docId: docId,
+                dates: dates,
             });
             setLoading(false);
             Alert.alert(
                 'Medication Added',
                 'Your medication has been successfully added.',
                 [{ text: 'OK', onPress: () => router.push('/(tabs)') }]
-            );            
-        }catch(e){
+            );
+        } catch (e) {
             setLoading(false);
-            console.log(e);
+            Alert.alert('Error', 'Failed to save medication. Please try again.');
+            console.error(e);
         }
     };
+
+    const DatePicker = ({ label, value, onPress }) => (
+        <TouchableOpacity style={[styles.inputGroup, styles.flex1]} onPress={onPress}>
+            <Ionicons name="calendar-outline" size={24} style={styles.icon} />
+            <Text style={styles.text}>{value ?? label}</Text>
+        </TouchableOpacity>
+    );
 
     return (
         <View style={styles.container}>
@@ -120,12 +147,11 @@ export default function AddMedForm() {
             </View>
             {/* Start and End Dates */}
             <View style={styles.dateGroup}>
-                <TouchableOpacity style={[styles.inputGroup, styles.flex1]} onPress={() => setShowStartDate(true)}>
-                    <Ionicons name="calendar-outline" size={24} style={styles.icon} />
-                    <Text style={styles.text}>
-                        {formatDateForText(formData?.startDate) ?? 'Start Date'}
-                    </Text>
-                </TouchableOpacity>
+                <DatePicker
+                    label="Start Date"
+                    value={formatDateForText(formData?.startDate)}
+                    onPress={() => setShowStartDate(true)}
+                />
                 {showStartDate && (
                     <RNDateTimePicker
                         minimumDate={new Date()}
@@ -136,12 +162,11 @@ export default function AddMedForm() {
                         value={formData?.startDate ? new Date(formData.startDate) : new Date()}
                     />
                 )}
-                <TouchableOpacity style={[styles.inputGroup, styles.flex1]} onPress={() => setShowEndDate(true)}>
-                    <Ionicons name="calendar-outline" size={24} style={styles.icon} />
-                    <Text style={styles.text}>
-                        {formatDateForText(formData?.endDate) ?? 'End Date'}
-                    </Text>
-                </TouchableOpacity>
+                <DatePicker
+                    label="End Date"
+                    value={formatDateForText(formData?.endDate)}
+                    onPress={() => setShowEndDate(true)}
+                />
                 {showEndDate && (
                     <RNDateTimePicker
                         minimumDate={new Date()}
@@ -155,30 +180,30 @@ export default function AddMedForm() {
             </View>
             {/* Reminder Time Picker */}
             <View style={styles.dateGroup}>
-                <TouchableOpacity style={[styles.inputGroup, styles.flex1]} onPress={() => setShowTimePicker(true)}>
-                    <Ionicons name="time-outline" size={24} style={styles.icon} />
-                    <Text style={styles.text}>
-                        {formData?.reminder ?? 'Select Reminder Time'}
-                    </Text>
-                </TouchableOpacity>
-            </View>
-            {showTimePicker && (
-                <RNDateTimePicker
-                    mode="time"
-                    onChange={(event) => {
-                        onHandleInputChange('reminder', formatTime(event.nativeEvent.timestamp));
-                        setShowTimePicker(false);
-                    }}
-                    value={new Date()}
+                <DatePicker
+                    label="Select Reminder Time"
+                    value={formData?.reminder}
+                    onPress={() => setShowTimePicker(true)}
                 />
-            )}
-
-
+                {showTimePicker && (
+                    <RNDateTimePicker
+                        mode="time"
+                        onChange={(event) => {
+                            onHandleInputChange('reminder', formatTime(event.nativeEvent.timestamp));
+                            setShowTimePicker(false);
+                        }}
+                        value={new Date()}
+                    />
+                )}
+            </View>
+            {/* Submit Button */}
             <TouchableOpacity style={styles.button} onPress={SaveMedication}>
-                {loading?<ActivityIndicator size={'large'} color={'white'}/>:
-                <Text style={styles.buttonText}>Add New Medication</Text>}
+                {loading ? (
+                    <ActivityIndicator size="large" color="white" />
+                ) : (
+                    <Text style={styles.buttonText}>Add New Medication</Text>
+                )}
             </TouchableOpacity>
-
         </View>
     );
 }
@@ -238,16 +263,16 @@ const styles = StyleSheet.create({
     flex1: {
         flex: 1,
     },
-    button:{
-        padding:15,
-        backgroundColor:Colors.PRIMARY,
-        borderRadius:15,
-        width:'100%',
-        marginTop:25
+    button: {
+        padding: 15,
+        backgroundColor: Colors.PRIMARY,
+        borderRadius: 15,
+        width: '100%',
+        marginTop: 25,
     },
-    buttonText:{
-        fontSize:17,
-        color:'white',
-        textAlign:'center'
-    }
+    buttonText: {
+        fontSize: 17,
+        color: 'white',
+        textAlign: 'center',
+    },
 });
