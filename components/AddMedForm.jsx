@@ -8,7 +8,7 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { FormatDate, formatDateForText, formatTime, getDatesRange } from '../service/ConvertDateTime';
 import { db } from '../config/FirebaseConfig';
 import { getLocalStorage } from '../service/Storage';
-import { setDoc, doc } from 'firebase/firestore'; 
+import { setDoc, doc } from 'firebase/firestore';
 import { useRouter } from 'expo-router';
 
 export default function AddMedForm() {
@@ -28,25 +28,25 @@ export default function AddMedForm() {
 
     const validateForm = () => {
         const { name, type, dose, startDate, endDate, reminder } = formData;
-    
+
         if (!name || !type || !dose || !startDate || !endDate || !reminder) {
             Alert.alert('Validation Error', 'Please fill out all fields.');
             return false;
         }
-    
+
         if (isNaN(dose)) {
             Alert.alert('Validation Error', 'Dose must be a valid number.');
             return false;
         }
-    
+
         if (new Date(startDate) > new Date(endDate)) {
             Alert.alert('Validation Error', 'Start Date must be earlier than End Date.');
             return false;
         }
-    
+
         return true;
     };
-    
+
 
     const SaveMedication = async () => {
         if (!validateForm()) return;
