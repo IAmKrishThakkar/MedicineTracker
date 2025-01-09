@@ -7,7 +7,6 @@ import { getLocalStorage } from '../../service/Storage';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../config/FirebaseConfig';
 import MedicationCardItem from '../../components/MedicationCardItem';
-import EmptyState from '../../components/EmptyState';
 
 
 export default function History() {
