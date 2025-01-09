@@ -38,3 +38,15 @@ export const GetDateRangeToDisplay=()=>{
     }
     return dateList;
 }
+
+export const GetPreviousDateRangeToDisplay = () => {
+    const dateList = [];
+    for (let i = 0; i < 7; i++) {
+        dateList.push({
+            date: moment().subtract(i, 'days').format('DD'),
+            day: moment().subtract(i, 'days').format('dd'),
+            formattedDate: moment().subtract(i, 'days').format('L'),
+        });
+    }
+    return dateList;
+};
