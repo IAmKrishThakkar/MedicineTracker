@@ -1,50 +1,70 @@
-# Welcome to your Expo app 👋
+# Medicine Tracker
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## 📌 Overview
+Medicine Tracker is a mobile application designed to help users manage their medications efficiently. The app allows users to schedule medication reminders, track their medicine intake, and maintain a history of their prescriptions.
 
-## Get started
+## 🚀 Features
+- 📅 **Add Medications**: Users can add medicines with details like name, dosage, schedule, and duration.
+- 🔔 **Reminders**: Receive timely alerts when it's time to take a medication.
+- 📊 **Track Medication History**: Keep a log of medications taken for better health monitoring.
+- 🎨 **User-Friendly Interface**: Intuitive and easy-to-use design for seamless user experience.
 
-1. Install dependencies
+## 🛠️ Tech Stack
+- **Frontend**: React Native (Expo)
+- **Backend**: Firebase (Authentication, Firestore for storage)
+- **Notifications**: Expo Notifications API
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+## 📂 Project Structure
+```
+MedicineTracker/
+│── src/
+│   ├── components/    # Reusable UI components
+│   ├── screens/       # App screens (Home, AddMedicine, History, etc.)
+│   ├── services/      # API and Firebase-related functions
+│   ├── config/        # Configuration files
+│   ├── constants/     # App-wide constants
+│   ├── assets/        # Images and other static files
+│── App.js             # Main application entry point
+│── package.json       # Dependencies and scripts
+│── README.md          # Project documentation
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 📲 Installation & Setup
+1. **Clone the Repository**
+   ```sh
+   git clone https://github.com/IAmKrishThakkar/MedicineTracker.git
+   cd MedicineTracker
+   ```
+2. **Install Dependencies**
+   ```sh
+   npm install
+   ```
+3. **Start the Application**
+   ```sh
+   expo start
+   ```
+4. **Run on Emulator or Device**
+   - Press `i` to open in iOS simulator (Mac required)
+   - Press `a` to open in Android emulator
+   - Scan the QR code using the Expo Go app on your mobile device
 
-## Learn more
+## 🧪 Testing
+- Run unit tests (if implemented)
+  ```sh
+  npm test
+  ```
 
-To learn more about developing your project with Expo, look at the following resources:
+## 🚀 Future Enhancements
+- 🌐 Cloud backup for medication history
+- 📅 Calendar view for better schedule visualization
+- 📌 Integration with wearable health devices
+- 🔑 User authentication for personalized tracking
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## 🤝 Contributing
+Contributions are welcome! Feel free to submit a pull request or open an issue.
 
-## Join the community
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 📞 Contact
+- **Author**: Krish Thakkar
+- **GitHub**: [IAmKrishThakkar](https://github.com/IAmKrishThakkar)
+- **Email**: [Your Email Here]
